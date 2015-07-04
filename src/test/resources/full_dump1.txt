@@ -1,0 +1,222 @@
+2015-05-30 20:13:03
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.25-b02 mixed mode):
+
+"Attach Listener" #1101 daemon prio=9 os_prio=31 tid=0x00007fbe248c9800 nid=0x768b waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Workbench-System-akka.actor.default-dispatcher-12" #135 prio=5 os_prio=31 tid=0x00007fbe2602f800 nid=0x6613 waiting on condition [0x000000011a599000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-11" #134 prio=5 os_prio=31 tid=0x00007fbe248c7800 nid=0x6513 waiting on condition [0x000000011a2bc000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-10" #133 prio=5 os_prio=31 tid=0x00007fbe248c6800 nid=0x615f waiting on condition [0x000000011a0f7000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-9" #132 prio=5 os_prio=31 tid=0x00007fbe28398800 nid=0x5f5f waiting on condition [0x0000000119ff4000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.idleAwaitWork(ForkJoinPool.java:2135)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2067)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-8" #131 prio=5 os_prio=31 tid=0x00007fbe25841000 nid=0x5e6f waiting on condition [0x000000011944a000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-7" #130 prio=5 os_prio=31 tid=0x00007fbe24853000 nid=0x710f waiting on condition [0x0000000119347000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"ForkJoinPool-3-worker-15" #57 daemon prio=5 os_prio=31 tid=0x00007fbe28885800 nid=0x580f waiting on condition [0x00000001186bc000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb41e940> (a scala.concurrent.forkjoin.ForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-6" #42 prio=5 os_prio=31 tid=0x00007fbe2583f800 nid=0x3707 waiting on condition [0x0000000114b6d000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.io.pinned-dispatcher-5" #41 prio=5 os_prio=31 tid=0x00007fbe28a9d000 nid=0x5c0f runnable [0x0000000118482000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)
+	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:198)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	- locked <0x00000007bb422f10> (a sun.nio.ch.Util$2)
+	- locked <0x00000007bb422f20> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x00000007bb422ec0> (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at akka.io.SelectionHandler$ChannelRegistryImpl$$anon$3.tryRun(SelectionHandler.scala:114)
+	at akka.io.SelectionHandler$ChannelRegistryImpl$Task.run(SelectionHandler.scala:215)
+	at akka.io.SelectionHandler$ChannelRegistryImpl$$anon$3.run(SelectionHandler.scala:147)
+	at akka.util.SerializedSuspendableExecutionContext.run$1(SerializedSuspendableExecutionContext.scala:68)
+	at akka.util.SerializedSuspendableExecutionContext.run(SerializedSuspendableExecutionContext.scala:72)
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Workbench-System-akka.actor.default-dispatcher-4" #40 prio=5 os_prio=31 tid=0x00007fbe236d1000 nid=0x6d03 waiting on condition [0x0000000118f2a000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-3" #39 prio=5 os_prio=31 tid=0x00007fbe27faa000 nid=0x6b03 waiting on condition [0x00000001185b9000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-akka.actor.default-dispatcher-2" #38 prio=5 os_prio=31 tid=0x00007fbe29119000 nid=0x6903 waiting on condition [0x0000000117df3000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
+"Workbench-System-scheduler-1" #37 prio=5 os_prio=31 tid=0x00007fbe24816800 nid=0x6807 waiting on condition [0x000000011881a000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at akka.actor.LightArrayRevolverScheduler.waitNanos(Scheduler.scala:226)
+	at akka.actor.LightArrayRevolverScheduler$$anon$8.nextTick(Scheduler.scala:405)
+	at akka.actor.LightArrayRevolverScheduler$$anon$8.run(Scheduler.scala:375)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Service Thread" #9 daemon prio=9 os_prio=31 tid=0x00007fbe2302e000 nid=0x5103 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C1 CompilerThread3" #8 daemon prio=9 os_prio=31 tid=0x00007fbe2302d800 nid=0x4f03 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread2" #7 daemon prio=9 os_prio=31 tid=0x00007fbe22821000 nid=0x4d03 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread1" #6 daemon prio=9 os_prio=31 tid=0x00007fbe22820800 nid=0x4b03 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #5 daemon prio=9 os_prio=31 tid=0x00007fbe24029000 nid=0x4903 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" #4 daemon prio=9 os_prio=31 tid=0x00007fbe24036000 nid=0x3917 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" #3 daemon prio=8 os_prio=31 tid=0x00007fbe22818800 nid=0x3503 in Object.wait() [0x0000000114a29000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:142)
+	- locked <0x000000078001a288> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:158)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+"Reference Handler" #2 daemon prio=10 os_prio=31 tid=0x00007fbe22818000 nid=0x3303 in Object.wait() [0x0000000114926000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:157)
+	- locked <0x00000007800129e8> (a java.lang.ref.Reference$Lock)
+
+"main" #1 prio=5 os_prio=31 tid=0x00007fbe24000000 nid=0x1303 waiting on condition [0x000000010702e000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at sbt.SourceModificationWatch$.watch(SourceModificationWatch.scala:32)
+	at sbt.Watched$.liftedTree1$1(Watched.scala:60)
+	at sbt.Watched$.executeContinuously(Watched.scala:59)
+	at sbt.BasicCommands$$anonfun$continuous$1$$anonfun$apply$10.apply(BasicCommands.scala:142)
+	at sbt.BasicCommands$$anonfun$continuous$1$$anonfun$apply$10.apply(BasicCommands.scala:140)
+	at sbt.CommandUtil$.withAttribute(CommandUtil.scala:33)
+	at sbt.BasicCommands$$anonfun$continuous$1.apply(BasicCommands.scala:140)
+	at sbt.BasicCommands$$anonfun$continuous$1.apply(BasicCommands.scala:139)
+	at sbt.Command$$anonfun$applyEffect$1$$anonfun$apply$2.apply(Command.scala:58)
+	at sbt.Command$$anonfun$applyEffect$1$$anonfun$apply$2.apply(Command.scala:58)
+	at sbt.Command$$anonfun$applyEffect$2$$anonfun$apply$3.apply(Command.scala:60)
+	at sbt.Command$$anonfun$applyEffect$2$$anonfun$apply$3.apply(Command.scala:60)
+	at sbt.Command$.process(Command.scala:92)
+	at sbt.MainLoop$$anonfun$1$$anonfun$apply$1.apply(MainLoop.scala:98)
+	at sbt.MainLoop$$anonfun$1$$anonfun$apply$1.apply(MainLoop.scala:98)
+	at sbt.State$$anon$1.process(State.scala:184)
+	at sbt.MainLoop$$anonfun$1.apply(MainLoop.scala:98)
+	at sbt.MainLoop$$anonfun$1.apply(MainLoop.scala:98)
+	at sbt.ErrorHandling$.wideConvert(ErrorHandling.scala:17)
+	at sbt.MainLoop$.next(MainLoop.scala:98)
+	at sbt.MainLoop$.run(MainLoop.scala:91)
+	at sbt.MainLoop$$anonfun$runWithNewLog$1.apply(MainLoop.scala:70)
+	at sbt.MainLoop$$anonfun$runWithNewLog$1.apply(MainLoop.scala:65)
+	at sbt.Using.apply(Using.scala:24)
+	at sbt.MainLoop$.runWithNewLog(MainLoop.scala:65)
+	at sbt.MainLoop$.runAndClearLast(MainLoop.scala:48)
+	at sbt.MainLoop$.runLoggedLoop(MainLoop.scala:32)
+	at sbt.MainLoop$.runLogged(MainLoop.scala:24)
+	at sbt.StandardMain$.runManaged(Main.scala:53)
+	at sbt.xMain.run(Main.scala:28)
+	at xsbt.boot.Launch$$anonfun$run$1.apply(Launch.scala:109)
+	at xsbt.boot.Launch$.withContextLoader(Launch.scala:128)
+	at xsbt.boot.Launch$.run(Launch.scala:109)
+	at xsbt.boot.Launch$$anonfun$apply$1.apply(Launch.scala:35)
+	at xsbt.boot.Launch$.launch(Launch.scala:117)
+	at xsbt.boot.Launch$.apply(Launch.scala:18)
+	at xsbt.boot.Boot$.runImpl(Boot.scala:41)
+	at xsbt.boot.Boot$.main(Boot.scala:17)
+	at xsbt.boot.Boot.main(Boot.scala)
+
+"VM Thread" os_prio=31 tid=0x00007fbe2304e800 nid=0x3103 runnable 
+
+"GC task thread#0 (ParallelGC)" os_prio=31 tid=0x00007fbe2400d000 nid=0x2103 runnable 
+
+"GC task thread#1 (ParallelGC)" os_prio=31 tid=0x00007fbe2400e000 nid=0x2303 runnable 
+
+"GC task thread#2 (ParallelGC)" os_prio=31 tid=0x00007fbe23002800 nid=0x2503 runnable 
+
+"GC task thread#3 (ParallelGC)" os_prio=31 tid=0x00007fbe22813000 nid=0x2703 runnable 
+
+"GC task thread#4 (ParallelGC)" os_prio=31 tid=0x00007fbe23003000 nid=0x2903 runnable 
+
+"GC task thread#5 (ParallelGC)" os_prio=31 tid=0x00007fbe23003800 nid=0x2b03 runnable 
+
+"GC task thread#6 (ParallelGC)" os_prio=31 tid=0x00007fbe2400e800 nid=0x2d03 runnable 
+
+"GC task thread#7 (ParallelGC)" os_prio=31 tid=0x00007fbe23004800 nid=0x2f03 runnable 
+
+"VM Periodic Task Thread" os_prio=31 tid=0x00007fbe2302f000 nid=0x5303 waiting on condition 
+
+JNI global references: 203
+

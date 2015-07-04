@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>The Scala.js Tutorial</title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #plainDump{
+            width: 50em;
+            height: 20em;
+            font-family: monospace;
+        }
+
+        .running-thread{
+            color: green;
+            font-weight: bold;
+        }
+        .blocked-thread{
+            color: red;
+            font-weight: bold;
+        }
+        .waiting-thread{
+            color: orange;
+            font-weight: bold;
+        }
+
+        .thread-listing{
+           max-height: 30em;
+            overflow:scroll;
+            /*margin-left: 10px;*/
+        }
+        .leading-tab{
+            padding-left: 1em;
+        }
+    </style>
+
+</head>
+<body>
+<h1>Thread Dump Analyzer</h1>
+<label for="plainDump">Déposez votre thread dump ici: </label>
+<br/>
+
+<form onsubmit="return false;">
+    <textarea id="plainDump" spellcheck="false">
+
+    </textarea>
+    <br/>
+    <button id="analyze" class="btn btn-primary">Analyze</button>
+    <button id="reset" class="btn btn-primary" type="reset">Reset</button>
+</form>
+
+
+
+<div id="alertContainer"></div>
+
+
+<!-- Include Scala.js compiled code -->
+<script type="text/javascript" src="target/scala-2.11/thread-dump-analyzer-fastopt.js"></script>
+<!-- Run tutorial.webapp.TutorialApp -->
+<script type="text/javascript">
+    var conf = new io.blep.tda.Configuration({
+        plainDumpId:"plainDump",
+        analyzeBtnId:"analyze",
+        resetBtnId:"reset",
+        alertContainerId: "alertContainer",
+        threadNumberId:"threadNumber"
+    })
+    io.blep.tda.Controller().main()
+    var controller = io.blep.tda.Controller().init(conf);
+
+</script>
+</body>
+</html>
