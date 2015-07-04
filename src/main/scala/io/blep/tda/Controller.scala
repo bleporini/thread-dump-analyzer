@@ -35,9 +35,7 @@ class Controller(val configuration: Configuration) {
     println("dumpTxt = " + dumpTxt.substring(0, 50))
     val triedDump: Try[ThreadDump] = Try(ThreadDumpAnalyzer.parseDump(dumpTxt))
     triedDump match {
-      case Success(threadDump: ThreadDump) =>
-        View.displaySharedLocks(threadDump)
-        listThreads(threadDump)
+      case Success(threadDump: ThreadDump) => View.displayResults(threadDump)
       case Failure(e) => error(configuration.alertContainerId, e)
     }
   }

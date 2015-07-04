@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>The Scala.js Tutorial</title>
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <script src="src/main/webapp/bower_components/jquery/dist/jquery.js"></script>
+    <script src="src/main/webapp/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <link href="src/main/webapp/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #plainDump{
             width: 50em;
@@ -39,21 +39,25 @@
 </head>
 <body>
 <h1>Thread Dump Analyzer</h1>
-<label for="plainDump">Déposez votre thread dump ici: </label>
+<label for="plainDump">Drop your thread dump here</label>
 <br/>
 
-<form onsubmit="return false;">
-    <textarea id="plainDump" spellcheck="false">
+<div class="container-fluid">
+    <div class="row">
+        <form onsubmit="return false;">
+            <textarea id="plainDump" spellcheck="false"> </textarea>
+            <br/>
+            <button id="analyze" class="btn btn-primary">Analyze</button>
+            <button id="reset" class="btn btn-primary" type="reset">Reset</button>
+        </form>
+    </div>
 
-    </textarea>
-    <br/>
-    <button id="analyze" class="btn btn-primary">Analyze</button>
-    <button id="reset" class="btn btn-primary" type="reset">Reset</button>
-</form>
+    <div class="row">
+        <div id="alertContainer"></div>
+    </div>
 
 
-
-<div id="alertContainer"></div>
+</div>
 
 
 <!-- Include Scala.js compiled code -->
