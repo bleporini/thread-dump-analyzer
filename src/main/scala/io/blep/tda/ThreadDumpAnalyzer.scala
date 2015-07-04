@@ -33,12 +33,20 @@ object ThreadDumpAnalyzer {
   }
 
   sealed trait Thread
-  abstract class AppThread(val name:String, val state: ThreadState) extends Thread
-  case class RunningThread(override val name:String, override val state: ThreadState) extends AppThread(name, state)
-  case class WaitingThread(override val name:String, override val state: ThreadState) extends AppThread(name, state)
-  case class BlockedThread(override val name:String, override val state: ThreadState) extends AppThread(name, state)
-  case class NewThread(override val name:String) extends AppThread(name, New)
-  case class TimedWaitingThread(override val name:String) extends AppThread(name,TimedWaiting)
+  sealed trait AppThread  extends Thread{
+    def name:String
+    def state: ThreadState
+    def stackTrace:Seq[String]
+  }
+  case class RunningThread(name:String,state: ThreadState, stackTrace:Seq[String]) extends AppThread
+  case class WaitingThread(name:String,state: ThreadState, stackTrace:Seq[String]) extends AppThread
+  case class BlockedThread(name:String,state: ThreadState, stackTrace:Seq[String]) extends AppThread
+  case class NewThread(name:String, stackTrace:Seq[String]) extends AppThread{
+    val state = New
+  }
+  case class TimedWaitingThread(name:String, stackTrace:Seq[String]) extends AppThread{
+    val state = TimedWaiting
+  }
   case class SysThread(name: String) extends Thread
 
   object ThreadState {
@@ -89,17 +97,17 @@ object ThreadDumpAnalyzer {
     def addSysThread(st:SysThread):ParsingThreads = ParsingThreads(dateStr,javaVersion,
       blockedThreads,runningThreads,waitingThreads,timedWaitingThreads, newThreads, st::systemThreads)
 
-    def addThread(header:String, state: ThreadState):ParsingThreads = state match {
+    def addThread(header:String, state: ThreadState, frames:Seq[String]):ParsingThreads = state match {
       case Blocked(_) => ParsingThreads(dateStr,javaVersion,
-        BlockedThread(header,state)::blockedThreads,runningThreads,waitingThreads, timedWaitingThreads, newThreads, systemThreads)
+        BlockedThread(header,state, frames)::blockedThreads,runningThreads,waitingThreads, timedWaitingThreads, newThreads, systemThreads)
       case Waiting(_) => ParsingThreads(dateStr,javaVersion,
-        blockedThreads,runningThreads,WaitingThread(header,state)::waitingThreads, timedWaitingThreads, newThreads, systemThreads)
+        blockedThreads,runningThreads,WaitingThread(header,state, frames)::waitingThreads, timedWaitingThreads, newThreads, systemThreads)
       case TimedWaiting => ParsingThreads(dateStr,javaVersion,
-        blockedThreads,runningThreads,waitingThreads, TimedWaitingThread(header) :: timedWaitingThreads, newThreads, systemThreads)
+        blockedThreads,runningThreads,waitingThreads, TimedWaitingThread(header, frames) :: timedWaitingThreads, newThreads, systemThreads)
       case New => ParsingThreads(dateStr,javaVersion,
-        blockedThreads,runningThreads,waitingThreads, timedWaitingThreads, NewThread(header)::newThreads, systemThreads)
+        blockedThreads,runningThreads,waitingThreads, timedWaitingThreads, NewThread(header, frames)::newThreads, systemThreads)
       case Runnable(_) => ParsingThreads(dateStr,javaVersion,
-        blockedThreads,RunningThread(header,state)::runningThreads,waitingThreads, timedWaitingThreads, newThreads, systemThreads)
+        blockedThreads,RunningThread(header,state, frames)::runningThreads,waitingThreads, timedWaitingThreads, newThreads, systemThreads)
     }
   }
   @JSExport
@@ -140,20 +148,20 @@ object ThreadDumpAnalyzer {
       case (""::tail, ThreadHeader(header)) => (builder.addSysThread(SysThread(header)), tail)
       case (""::tail, NotAThread) => (builder, tail)
       case (l::tail, NotAThread) => _parseThread(tail, NotAThread, builder)
-      case (l::tail, ThreadHeader(header)) => val (state, remaining) = parseState(l, tail)
-        _parseThread(remaining, ParsingStack(header, l::Nil, state), builder)
+      case (l::tail, ThreadHeader(header)) => val (state, remaining, frames) = parseState(l, tail)
+        _parseThread(remaining, ParsingStack(header, frames, state), builder)
       case (Nil, ThreadHeader(header)) => (builder.addSysThread(SysThread(header)), lines)
-      case (""::tail, ParsingStack(header,frames, state)) => (builder.addThread(header, state), tail)
-      case (l::tail, ParsingStack(header,frames, _)) => _parseThread(tail, status, builder)
-      case (Nil, ParsingStack(header,frames, state)) => (builder.addThread(header,state), Nil)
+      case (""::tail, ParsingStack(header,frames, state)) => (builder.addThread(header, state, frames), tail)
+      case (l::tail, ParsingStack(header,frames, state)) => _parseThread(tail, ParsingStack(header,l::frames, state), builder)
+      case (Nil, ParsingStack(header,frames, state)) => (builder.addThread(header,state,frames), Nil)
       case (Nil, NotAThread) => (builder, Nil)
     }
 
-    def parseState(line:String, stackFrames : List[String]): (ThreadState, List[String]) = line match {
+    def parseState(line:String, stackFrames : List[String]): (ThreadState, List[String], List[String]) = line match {
       case stateRe(state) =>
-        val (monitors, remaining) = parseStackFrames(stackFrames)
+        val (monitors, remaining, frames) = parseStackFrames(stackFrames)
         val value: ThreadState = ThreadState.parseState(state, monitors.reverse)
-        (value, remaining)
+        (value, remaining, frames)
       case _ => throw new IllegalArgumentException(s"Unable to parse state for ${line}")
     }
 
@@ -166,15 +174,19 @@ object ThreadDumpAnalyzer {
 
   }
 
-  private[tda] def parseStackFrames(stackFrames:List[String]):(List[Monitor], List[String])={
+  private[tda] def parseStackFrames(stackFrames:List[String]):(List[Monitor], List[String], List[String])={
 
-    def _parseStackFrames(frames: List[String], foundMonitors:List[Option[Monitor]]): (List[Monitor], List[String])=frames match{
-      case ""::tail => (foundMonitors flatten, frames)
-      case Nil => (foundMonitors flatten, Nil)
-      case frame::tail => _parseStackFrames(tail, parseFrame.lift(frame)::foundMonitors)
+    def _parseStackFrames(frames: List[String], foundMonitors:List[Monitor], notMonitors:List[String])
+    : (List[Monitor], List[String], List[String])=frames match{
+      case ""::tail => (foundMonitors , frames, notMonitors.reverse)
+      case Nil => (foundMonitors , Nil, notMonitors.reverse)
+      case frame::tail => parseFrame(frame) match {
+        case Left(m) => _parseStackFrames(tail,m::foundMonitors, notMonitors)
+        case Right(f) => _parseStackFrames(tail,foundMonitors,f::notMonitors)
+      }
     }
 
-    _parseStackFrames(stackFrames, Nil)
+    _parseStackFrames(stackFrames, Nil, Nil)
   }
 
   val waitingToLockRe = """.*- waiting to lock <([^>]+)> \(a ([^\)]+).*""".r
@@ -182,11 +194,12 @@ object ThreadDumpAnalyzer {
   val waitingRe = """.*- waiting on <([^>]+)> \(a ([^\)]+).*""".r
   val waitingRe2 = """.*- parking to wait for +<([^>]+)> \(a ([^\)]+).*""".r
 
-  def parseFrame: PartialFunction[String,Monitor]={
-    case waitingToLockRe(id, clazz) => BlockingMonitor(id, clazz)
-    case lockedRe(id, clazz) => OwnedMonitor(id, clazz)
-    case waitingRe(id, clazz) => WaitedMonitor(id, clazz)
-    case waitingRe2(id, clazz) => WaitedMonitor(id, clazz)
+  def parseFrame(frame:String)= frame match {
+    case waitingToLockRe(id, clazz) => Left(BlockingMonitor(id, clazz))
+    case lockedRe(id, clazz) => Left(OwnedMonitor(id, clazz))
+    case waitingRe(id, clazz) => Left(WaitedMonitor(id, clazz))
+    case waitingRe2(id, clazz) => Left(WaitedMonitor(id, clazz))
+    case _ => Right(frame)
   }
 
 }

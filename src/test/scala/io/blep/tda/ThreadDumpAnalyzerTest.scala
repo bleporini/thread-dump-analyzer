@@ -18,7 +18,7 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
   test("should parse a blocking monitor"){
     val frame = "	- waiting to lock <0x00000000e16e5ca0> (a com.acme.content.AtomicReferenceOptionCache)"
 
-    val expected = BlockingMonitor("0x00000000e16e5ca0", "com.acme.content.AtomicReferenceOptionCache")
+    val expected = Left(BlockingMonitor("0x00000000e16e5ca0", "com.acme.content.AtomicReferenceOptionCache"))
 
     val res = parseFrame(frame)
 
@@ -96,13 +96,28 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
   }
 
   test("should parse an app thread"){
+/*
     val lines = """"Attach Listener" #1101 daemon prio=9 os_prio=31 tid=0x00007fbe248c9800 nid=0x768b waiting on condition [0x0000000000000000]""" ::
       """   java.lang.Thread.State: RUNNABLE""" :: Nil
+*/
+
+    val lines = """"Workbench-System-akka.io.pinned-dispatcher-5" #41 prio=5 os_prio=31 tid=0x00007fbe28a9d000 nid=0x5c0f runnable [0x0000000118482000]""" ::
+      """   java.lang.Thread.State: RUNNABLE""" ::
+      """	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)""" ::
+      """	at sun.nio.ch.KQueueArrayWrapper.poll(KQueueArrayWrapper.java:198)""" ::
+      """	at sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:103)""" ::
+      """	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)""" :: Nil
+
 
     val before: ParsingThreads = ParsingThreads("","")
     val (after,_) = parseThread(lines, before)
 
-    assert( after.runningThreads.head === RunningThread("Attach Listener", Runnable(Nil)))
+    val thread: RunningThread = after.runningThreads.head
+    assert( thread.isInstanceOf[RunningThread])
+    assert( thread.name === "Workbench-System-akka.io.pinned-dispatcher-5")
+    assert( thread.state === Runnable(Nil))
+    assert( thread.stackTrace.size === 4)
+    assert( thread.stackTrace.head === "	at sun.nio.ch.KQueueArrayWrapper.kevent0(Native Method)")
 
   }
 
@@ -126,7 +141,7 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
     println("threadDump = " + threadDump)
 
     val states = threadDump.threads.collect{
-      case RunningThread(name,state) if name != "Finalizer" => state
+      case RunningThread(name,state, _) if name != "Finalizer" => state
     }
 
     assert( threadDump.runningThreads.flatMap(_.state.monitors.filter(!_.isInstanceOf[OwnedMonitor])) === Nil)
