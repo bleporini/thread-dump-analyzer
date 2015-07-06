@@ -3,7 +3,6 @@ package io.blep.tda
 import scala.scalajs.js.annotation.JSExport
 
 object ThreadDumpAnalyzer {
-//  @JSExportAll
   case class ThreadDump(dateStr: String,
                         javaVersion : String,
                         blockedThreads: List[BlockedThread],
@@ -49,7 +48,6 @@ object ThreadDumpAnalyzer {
   case class SysThread(id:String, name: String) extends Thread
 
   object ThreadState {
-
     def parseState(s:String, monitors : List[Monitor]) = (s, monitors) match{
       case ("NEW", _)=> New
       case ("RUNNABLE", l) => Runnable(l)
@@ -59,12 +57,12 @@ object ThreadDumpAnalyzer {
     }
   }
 
-  abstract class ThreadState(val state:String, val monitors:List[Monitor])
-  case object New extends ThreadState("NEW", Nil)
-  case class Runnable(override val monitors:List[Monitor]) extends ThreadState("RUNNABLE", monitors)
-  case class Blocked(override val monitors:List[Monitor]) extends ThreadState("BLOCKED", monitors)
-  case class Waiting(override val monitors:List[Monitor]) extends ThreadState("WAITING", monitors)
-  case object TimedWaiting extends ThreadState("TIMED_WAITING", Nil)
+  sealed trait ThreadState{def monitors:List[Monitor]}
+  case object New extends ThreadState{ override def monitors = Nil}
+  case class Runnable(monitors:List[Monitor]) extends ThreadState
+  case class Blocked(monitors:List[Monitor]) extends ThreadState
+  case class Waiting(monitors:List[Monitor]) extends ThreadState
+  case object TimedWaiting extends ThreadState { override def monitors = Nil}
 
   sealed trait Monitor{
     def id:String
@@ -83,7 +81,9 @@ object ThreadDumpAnalyzer {
   }
 
 
-  abstract class ThreadDumpParseStatus
+  abstract class ThreadDumpParseStatus{
+    def asParsingThread:ParsingThreads = ???
+  }
   case object StartParsing extends ThreadDumpParseStatus
   case class DateParsed(dateStr :String) extends ThreadDumpParseStatus
   case class ParsingThreads(dateStr: String, javaVersion: String,
@@ -93,6 +93,9 @@ object ThreadDumpAnalyzer {
                             timedWaitingThreads: List[TimedWaitingThread] =Nil,
                             newThreads: List[NewThread] = Nil,
                             systemThreads: List[SysThread] = Nil) extends ThreadDumpParseStatus{
+
+    override def asParsingThread = this
+
     def addSysThread(st:SysThread):ParsingThreads = ParsingThreads(dateStr,javaVersion,
       blockedThreads,runningThreads,waitingThreads,timedWaitingThreads, newThreads, st::systemThreads)
 
@@ -118,7 +121,7 @@ object ThreadDumpAnalyzer {
         case (l::tail, DateParsed(dateStr)) => _parseDump(tail, ParsingThreads(dateStr, parseVersion(l)))
         case (Nil, ParsingThreads(dateStr, javaVersion, bs, rs, ws, ts, ns, ss)) =>
           ThreadDump(dateStr, javaVersion, bs, rs, ws, ts, ns, ss)
-        case (lst, ParsingThreads(_, _, _, _,_,_,_,_)) => val (status, remaining) = parseThread(lst, builder.asInstanceOf[ParsingThreads])
+        case (lst, ParsingThreads(_,_,_,_,_,_,_,_)) => val (status, remaining) = parseThread(lst, builder.asParsingThread)
           _parseDump(remaining, status)
       }
 
