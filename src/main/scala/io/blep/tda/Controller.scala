@@ -1,7 +1,7 @@
 package io.blep.tda
 
 import io.blep.tda.ThreadDumpAnalyzer.ThreadDump
-import io.blep.tda.View.resultContainer
+import io.blep.tda.BootstrapView.resultContainer
 import org.scalajs.dom
 import org.scalajs.dom.html.{Button, TextArea}
 import org.scalajs.dom.raw.Element
@@ -17,10 +17,16 @@ class Configuration(
                      val analyzeBtnId: String,
                      val resetBtnId: String,
                      val alertContainerId: String,
-                     val threadNumberId: String
+                     val viewType:String
                      )
 
 class Controller(val configuration: Configuration) {
+
+  def buildViewFactory(typ:String):ThreadDump => View = typ match {
+    case "bootstrap" => td => new BootstrapView(td)
+  }
+
+  val viewFactory = buildViewFactory(configuration.viewType)
 
   val analyzeBtn: Button = dom.document.getElementById(configuration.analyzeBtnId).asInstanceOf[Button]
   val resetBtn: Button = dom.document.getElementById(configuration.resetBtnId).asInstanceOf[Button]
@@ -31,7 +37,7 @@ class Controller(val configuration: Configuration) {
     val dumpTxt: String = plainDumpArea.value
     val triedDump: Try[ThreadDump] = Try(ThreadDumpAnalyzer.parseDump(dumpTxt))
     triedDump match {
-      case Success(threadDump: ThreadDump) => new View(threadDump).displayResults
+      case Success(threadDump: ThreadDump) => viewFactory(threadDump).displayResults
       case Failure(e) => error(configuration.alertContainerId, e)
     }
   }
@@ -48,7 +54,7 @@ class Controller(val configuration: Configuration) {
   def error(containerId: String, t: Throwable) = {
     val id1: Element = dom.document.getElementById(containerId)
 
-    id1.appendChild(View.buildAlert(t.getMessage))
+    id1.appendChild(BootstrapView.buildAlert(t.getMessage))
   }
 }
 
