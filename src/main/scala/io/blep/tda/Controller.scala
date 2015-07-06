@@ -21,7 +21,6 @@ class Configuration(
                      )
 
 class Controller(val configuration: Configuration) {
-  println("Init")
 
   val analyzeBtn: Button = dom.document.getElementById(configuration.analyzeBtnId).asInstanceOf[Button]
   val resetBtn: Button = dom.document.getElementById(configuration.resetBtnId).asInstanceOf[Button]
@@ -30,7 +29,6 @@ class Controller(val configuration: Configuration) {
     reset(e)
     val plainDumpArea: TextArea = dom.document.getElementById(configuration.plainDumpId).asInstanceOf[TextArea]
     val dumpTxt: String = plainDumpArea.value
-    println("dumpTxt = " + dumpTxt.substring(0, 50))
     val triedDump: Try[ThreadDump] = Try(ThreadDumpAnalyzer.parseDump(dumpTxt))
     triedDump match {
       case Success(threadDump: ThreadDump) => new View(threadDump).displayResults
@@ -62,5 +60,5 @@ object Controller extends JSApp {
 
 
   @JSExport
-  override def main() = println("Starting controller")
+  override def main() = {}
 }
