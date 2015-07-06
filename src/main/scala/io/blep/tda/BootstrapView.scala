@@ -24,8 +24,8 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   val runningBullet = span(`class`:="glyphicon glyphicon-repeat running-thread")
   val blockedBullet = span(`class`:="glyphicon glyphicon-remove-circle blocked-thread")
   val waitingBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
-  val timedWaitingBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
-  val newBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
+  val timedWaitingBullet = span(`class`:="glyphicon glyphicon-time timed-waiting-thread")
+  val newBullet = span(`class`:="glyphicon glyphicon-collapse-up running-thread")
 
 
   override def displayResults={
@@ -67,7 +67,7 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
             td(a(href:="#waitingThreads")(waitingBullet," Waiting threads")),td(threadDump.waitingThreads.size)
           ),
           tr(
-            td(timedWaitingBullet," Timed waiting threads"),td(threadDump.timedWaitingThreads.size)
+            td(a(href:="#timedWaitingThreads")(timedWaitingBullet," Timed waiting threads")),td(threadDump.timedWaitingThreads.size)
           ),
           tr(
             td(newBullet," New threads"),td(threadDump.newThreads.size)
@@ -106,7 +106,8 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     div(`class`:="row")(
       buildThreadListPanel("runningThreads","Running threads", threadDump.runningThreads),
       buildThreadListPanel("blockedThreads","Blocked threads", threadDump.blockedThreads),
-      buildThreadListPanel("waitingThreads","Waiting threads", threadDump.waitingThreads)
+      buildThreadListPanel("waitingThreads","Waiting threads", threadDump.waitingThreads),
+      buildThreadListPanel("timedWaitingThreads","Timed waiting threads", threadDump.timedWaitingThreads)
     )render
   }
 
