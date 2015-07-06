@@ -12,9 +12,6 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
     new String(bytes)
   }
 
-
-
-
   test("should parse a blocking monitor"){
     val frame = "	- waiting to lock <0x00000000e16e5ca0> (a com.acme.content.AtomicReferenceOptionCache)"
 
@@ -92,14 +89,22 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
     val before: ParsingThreads = ParsingThreads("","")
     val after = parseThread(threadStr::Nil, before)._1
 
-    assert(after.systemThreads.head === SysThread("GC task thread#0 (ParallelGC)"))
+    assert(after.systemThreads.head === SysThread("0x00007fbe2400d000","GC task thread#0 (ParallelGC)"))
+  }
+
+  test("should read the thread id"){
+        val lines = """"Attach Listener" #1101 daemon prio=9 os_prio=31 tid=0x00007fbe248c9800 nid=0x768b waiting on condition [0x0000000000000000]""" ::
+          """   java.lang.Thread.State: RUNNABLE""" :: Nil
+
+    val (threads , _) = parseThread(lines, ParsingThreads("",""))
+
+    assert(threads.runningThreads.size === 1)
+    val thread = threads.runningThreads.head
+    assert(thread.id === "0x00007fbe248c9800")
+
   }
 
   test("should parse an app thread"){
-/*
-    val lines = """"Attach Listener" #1101 daemon prio=9 os_prio=31 tid=0x00007fbe248c9800 nid=0x768b waiting on condition [0x0000000000000000]""" ::
-      """   java.lang.Thread.State: RUNNABLE""" :: Nil
-*/
 
     val lines = """"Workbench-System-akka.io.pinned-dispatcher-5" #41 prio=5 os_prio=31 tid=0x00007fbe28a9d000 nid=0x5c0f runnable [0x0000000118482000]""" ::
       """   java.lang.Thread.State: RUNNABLE""" ::
@@ -141,7 +146,7 @@ class ThreadDumpAnalyzerTest extends org.scalatest.FunSuite {
     println("threadDump = " + threadDump)
 
     val states = threadDump.threads.collect{
-      case RunningThread(name,state, _) if name != "Finalizer" => state
+      case RunningThread(_,name,state, _) if name != "Finalizer" => state
     }
 
     assert( threadDump.runningThreads.flatMap(_.state.monitors.filter(!_.isInstanceOf[OwnedMonitor])) === Nil)
