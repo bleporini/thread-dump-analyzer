@@ -31,11 +31,11 @@ class View(val threadDump: ThreadDump) {
   def displayResults={
     resultContainer.appendChild(
       div(`class` := "row")(
-        div(`class` := "col-md-8")(
-          buildSharedLockPanel
-        ),
         div(`class` := "col-md-4")(
           buildGeneralInfoPanel
+        ),
+        div(`class` := "col-md-8")(
+          buildSharedLockPanel
         )
       ) render
     )
@@ -58,16 +58,16 @@ class View(val threadDump: ThreadDump) {
             td("All threads"),td(threadDump.threads.size)
           ),
           tr(
-            td(runningBullet, " Running threads"),td(threadDump.runningThreads.size)
+            td(a(href := "#runningThreads")(runningBullet, " Running threads")),td(threadDump.runningThreads.size)
           ),
           tr(
-            td(blockedBullet," Blocked threads"),td(threadDump.blockedThreads.size)
+            td(a(href:="#blockedThreads")(blockedBullet," Blocked threads")),td(threadDump.blockedThreads.size)
           ),
           tr(
-            td(waitingBullet," Waiting threads"),td(threadDump.waitingThreads.size)
+            td(a(href:="#waitingThreads")(waitingBullet," Waiting threads")),td(threadDump.waitingThreads.size)
           ),
           tr(
-            td(waitingBullet," Timed waiting threads"),td(threadDump.timedWaitingThreads.size)
+            td(timedWaitingBullet," Timed waiting threads"),td(threadDump.timedWaitingThreads.size)
           ),
           tr(
             td(newBullet," New threads"),td(threadDump.newThreads.size)
@@ -104,14 +104,14 @@ class View(val threadDump: ThreadDump) {
 
   def listThreads ={
     div(`class`:="row")(
-      buildThreadListPanel("Running threads", threadDump.runningThreads),
-      buildThreadListPanel("Blocked threads", threadDump.blockedThreads),
-      buildThreadListPanel("Waiting threads", threadDump.waitingThreads)
+      buildThreadListPanel("runningThreads","Running threads", threadDump.runningThreads),
+      buildThreadListPanel("blockedThreads","Blocked threads", threadDump.blockedThreads),
+      buildThreadListPanel("waitingThreads","Waiting threads", threadDump.waitingThreads)
     )render
   }
 
-  def buildThreadListPanel(panelName:String,threads: List[AppThread])=
-    div(`class`:="col-md-12")(
+  def buildThreadListPanel(panelId:String, panelName:String,threads: List[AppThread])=
+    div(`class`:="col-md-12", id:=panelId)(
       div(`class` := "panel panel-default")(
         div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"$panelName (${threads.size})")),
         div(`class` := "thread-listing panel-body", id:="runningTreads", role:="tablist")(
