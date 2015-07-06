@@ -1,36 +1,49 @@
 package io.blep.tda
 
 import io.blep.tda.ThreadDumpAnalyzer._
+import io.blep.tda.View.resultContainer
 import org.scalajs.dom.html.{Span, Div}
 
 import scalatags.JsDom.TypedTag
 import scalatags.JsDom.all._
 
 object View {
+  def buildAlert(msg: String) = div(cls := "alert alert-danger alert-dismissible fade in")(
+    button(`type` := "button", `class` := "close", "data-dismiss".attr := "alert") {
+      span("x")
+    },
+    s"Parsing error : ${msg}"
+  ) render
+
+  val resultContainer = div.render
+
+}
+
+
+class View(val threadDump: ThreadDump) {
   val runningBullet = span(`class`:="glyphicon glyphicon-repeat running-thread")
   val blockedBullet = span(`class`:="glyphicon glyphicon-remove-circle blocked-thread")
   val waitingBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
   val timedWaitingBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
   val newBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
 
-  val resultContainer = div.render
-  
-  def displayResults(threadDump: ThreadDump)={
+
+  def displayResults={
     resultContainer.appendChild(
       div(`class` := "row")(
         div(`class` := "col-md-8")(
-          buildSharedLockPanel(threadDump)
+          buildSharedLockPanel
         ),
         div(`class` := "col-md-4")(
-          buildGeneralInfoPanel(threadDump)
+          buildGeneralInfoPanel
         )
       ) render
     )
 
-    resultContainer.appendChild(listThreads(threadDump))
+    resultContainer.appendChild(listThreads)
   }
 
-  def buildGeneralInfoPanel(threadDump: ThreadDump)={
+  def buildGeneralInfoPanel={
     div(`class` := "panel panel-default")(
       div(`class` := "panel-heading")(h2(`class` := "panel-title")("General information")),
       div(`class` := "thread-listing panel-body")(
@@ -68,7 +81,7 @@ object View {
 
   }
 
-  def buildSharedLockPanel(threadDump: ThreadDump)={
+  def buildSharedLockPanel={
     val panel: Div = div(`class` := "panel panel-default")(
       div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"Hot monitors (${threadDump.sharedLocks.size})"))
     ) render
@@ -89,7 +102,7 @@ object View {
     panel
   }
 
-  def listThreads(threadDump: ThreadDump) ={
+  def listThreads ={
     div(`class`:="row")(
       buildThreadListPanel("Running threads", threadDump.runningThreads),
       buildThreadListPanel("Blocked threads", threadDump.blockedThreads),
@@ -130,17 +143,6 @@ object View {
     case TimedWaiting => timedWaitingBullet
     case New => newBullet
   }
-
-
-
-  def buildAlert(msg: String) = div(cls := "alert alert-danger alert-dismissible fade in")(
-    button(`type` := "button", `class` := "close", "data-dismiss".attr := "alert") {
-      span("x")
-    },
-    s"Parsing error : ${msg}"
-  ) render
-
-
-
 }
+
 

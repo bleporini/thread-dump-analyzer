@@ -1,17 +1,15 @@
 package io.blep.tda
 
 import io.blep.tda.ThreadDumpAnalyzer.ThreadDump
-import io.blep.tda.View.{resultContainer, listThreads}
-import org.scalajs.dom.html.{Span, Button, Div, TextArea}
-import org.scalajs.dom.raw.{MouseEvent, Element}
+import io.blep.tda.View.resultContainer
+import org.scalajs.dom
+import org.scalajs.dom.html.{Button, TextArea}
+import org.scalajs.dom.raw.Element
 import org.scalajs.jquery.{jQuery => $}
-import upickle._
 
-import scala.scalajs.js.{Function1, JSApp}
+import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.{JSExport, JSExportNamed}
 import scala.util.{Failure, Success, Try}
-import scalatags.JsDom.all._
-import org.scalajs.dom
 
 @JSExportNamed
 class Configuration(
@@ -35,13 +33,12 @@ class Controller(val configuration: Configuration) {
     println("dumpTxt = " + dumpTxt.substring(0, 50))
     val triedDump: Try[ThreadDump] = Try(ThreadDumpAnalyzer.parseDump(dumpTxt))
     triedDump match {
-      case Success(threadDump: ThreadDump) => View.displayResults(threadDump)
+      case Success(threadDump: ThreadDump) => new View(threadDump).displayResults
       case Failure(e) => error(configuration.alertContainerId, e)
     }
   }
   }
 
-  //  val resultContainer = div(p("line1"),p("line2")).render
   dom.document.body.appendChild(resultContainer)
 
   def reset(e:Any)={
@@ -59,9 +56,6 @@ class Controller(val configuration: Configuration) {
 
 
 object Controller extends JSApp {
-
-
-  val elem = p("Error").render
 
   @JSExport
   def init(conf: Configuration) = new Controller(conf)
