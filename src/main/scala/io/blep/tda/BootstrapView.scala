@@ -44,7 +44,7 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   }
 
   def buildGeneralInfoPanel={
-    div(`class` := "panel panel-default")(
+    div(`class` := "panel panel-default affix affix-top")(
       div(`class` := "panel-heading")(h2(`class` := "panel-title")("General information")),
       div(`class` := "thread-listing panel-body")(
         table(`class`:="info")(
@@ -112,14 +112,14 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   }
 
   def buildThreadListPanel(panelId:String, panelName:String,threads: List[AppThread])=
-    div(`class`:="col-md-12", id:=panelId)(
+    div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
       div(`class` := "panel panel-default")(
         div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"$panelName (${threads.size})")),
         div(`class` := "thread-listing panel-body", id:="runningTreads", role:="tablist")(
           threads map buildThreadAccordion("runningTreads")
         )
       )
-    )
+    )::Nil
 
   def buildThreadAccordion(groupId:String)(thread: AppThread)={
     val theId: String = groupId + thread.id
