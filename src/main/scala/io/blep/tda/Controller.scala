@@ -1,11 +1,10 @@
 package io.blep.tda
 
-import io.blep.tda.ThreadDumpAnalyzer.ThreadDump
 import io.blep.tda.BootstrapView.resultContainer
+import io.blep.tda.ThreadDumpAnalyzer.ThreadDump
 import org.scalajs.dom
 import org.scalajs.dom.html.{Button, TextArea}
 import org.scalajs.dom.raw.Element
-import org.scalajs.jquery.{jQuery => $}
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.{JSExport, JSExportNamed}
