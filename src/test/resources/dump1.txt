@@ -1,0 +1,14 @@
+2015-05-30 20:13:03
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.25-b02 mixed mode):
+
+"Attach Listener" #1101 daemon prio=9 os_prio=31 tid=0x00007fbe248c9800 nid=0x768b waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Workbench-System-akka.actor.default-dispatcher-12" #135 prio=5 os_prio=31 tid=0x00007fbe2602f800 nid=0x6613 waiting on condition [0x000000011a599000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007bb3c3ba8> (a akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinPool)
+	at scala.concurrent.forkjoin.ForkJoinPool.scan(ForkJoinPool.java:2075)
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)
+
