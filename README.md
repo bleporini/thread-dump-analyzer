@@ -8,7 +8,8 @@ The rendering phase is based on Twitter Bootstrap.
 To use it, just run :
  
  ```
- $ sbt fastOptJS
+ $ sbt fastOptJS  
+ $ bower install
  ```
  
  and serve the test.html page.

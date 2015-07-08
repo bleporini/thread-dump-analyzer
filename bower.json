@@ -1,0 +1,19 @@
+{
+  "name": "thread-dump-analyzer",
+  "version": "0.0.0",
+  "homepage": "https://github.com/bleporini/thread-dump-analyzer",
+  "authors": [
+    "Brice LEPORINI <bleporini@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5"
+  }
+}
