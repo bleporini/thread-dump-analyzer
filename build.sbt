@@ -2,6 +2,7 @@
 enablePlugins(ScalaJSPlugin)
 
 name := "Thread dump analyzer"
+version := "1"
 
 scalaVersion := "2.11.6" // or any other Scala version >= 2.10.2
 

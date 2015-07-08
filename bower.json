@@ -1,6 +1,6 @@
 {
   "name": "thread-dump-analyzer",
-  "version": "0.0.0",
+  "version": "1",
   "homepage": "https://github.com/bleporini/thread-dump-analyzer",
   "authors": [
     "Brice LEPORINI <bleporini@gmail.com>"
