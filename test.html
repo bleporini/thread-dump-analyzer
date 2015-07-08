@@ -46,22 +46,39 @@
 </head>
 <body>
 <h1>Thread Dump Analyzer</h1>
+
 <label for="plainDump">Drop your thread dump here</label>
 <br/>
 
 <div class="container-fluid">
-    <div class="row">
-        <form onsubmit="return false;">
-            <textarea id="plainDump" spellcheck="false"> </textarea>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="tabs">
+        <li role="presentation" class="active"><a href="#dump" aria-controls="home" role="tab" data-toggle="tab">Dump</a></li>
+        <li role="presentation"><a href="#analysis" aria-controls="profile" role="tab" data-toggle="tab">Analysis</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="dump">
             <br/>
-            <button id="analyze" class="btn btn-primary">Analyze</button>
-            <button id="reset" class="btn btn-primary" type="reset">Reset</button>
-        </form>
+            <div class="row">
+                <form onsubmit="return false;">
+                    <textarea id="plainDump" spellcheck="false"> </textarea>
+                    <br/>
+                    <button id="analyze" class="btn btn-primary">Analyze</button>
+                    <button id="reset" class="btn btn-primary" type="reset">Reset</button>
+                </form>
+            </div>
+            <div class="row">
+                <div id="alertContainer"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="analysis">
+            <br/>
+        </div>
     </div>
 
-    <div class="row">
-        <div id="alertContainer"></div>
-    </div>
+
 
 </div>
 
@@ -74,9 +91,14 @@
         analyzeBtnId:"analyze",
         resetBtnId:"reset",
         alertContainerId: "alertContainer",
+        resultContainerId: "analysis",
         viewType:"bootstrap"
     })
     var controller = io.blep.tda.Controller().init(conf);
+
+    document.body.addEventListener("analysis_finished", function(){
+        $('#tabs a[href="#analysis"]').tab('show')
+    })
 
 </script>
 </body>

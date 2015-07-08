@@ -4,7 +4,7 @@ import io.blep.tda.BootstrapView.resultContainer
 import io.blep.tda.ThreadDumpAnalyzer.ThreadDump
 import org.scalajs.dom
 import org.scalajs.dom.html.{Button, TextArea}
-import org.scalajs.dom.raw.Element
+import org.scalajs.dom.raw.{CustomEvent, Event, Element}
 
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.{JSExport, JSExportNamed}
@@ -16,6 +16,7 @@ class Configuration(
                      val analyzeBtnId: String,
                      val resetBtnId: String,
                      val alertContainerId: String,
+                     val resultContainerId:String,
                      val viewType:String
                      )
 
@@ -37,12 +38,19 @@ class Controller(val configuration: Configuration) {
     val triedDump: Try[ThreadDump] = Try(ThreadDumpAnalyzer.parseDump(dumpTxt))
     triedDump match {
       case Success(threadDump: ThreadDump) => viewFactory(threadDump).displayResults
+        switchTabs
       case Failure(e) => error(configuration.alertContainerId, e)
     }
   }
   }
 
-  dom.document.body.appendChild(resultContainer)
+  def switchTabs={
+    val event = dom.document.createEvent("Event")
+    event.initEvent("analysis_finished",true,true)
+    dom.document.body.dispatchEvent(event)
+  }
+
+  dom.document.getElementById(configuration.resultContainerId).appendChild(resultContainer)
 
   def reset(e:Any)={
     val nodes = resultContainer.childNodes
