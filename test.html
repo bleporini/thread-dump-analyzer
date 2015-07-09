@@ -38,19 +38,18 @@
         .leading-tab{
             padding-left: 1em;
         }
-        table.info tr td:nth-child(2){
+        table.info tr td{
             max-width: 20em;
+            padding-right: 10px;
         }
     </style>
 
 </head>
 <body>
-<h1>Thread Dump Analyzer</h1>
 
-<label for="plainDump">Drop your thread dump here</label>
-<br/>
 
 <div class="container-fluid">
+    <h1>Thread Dump Analyzer</h1>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist" id="tabs">
         <li role="presentation" class="active"><a href="#dump" aria-controls="home" role="tab" data-toggle="tab">Dump</a></li>
@@ -61,17 +60,16 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="dump">
             <br/>
-            <div class="row">
-                <form onsubmit="return false;">
-                    <textarea id="plainDump" spellcheck="false"> </textarea>
-                    <br/>
-                    <button id="analyze" class="btn btn-primary">Analyze</button>
-                    <button id="reset" class="btn btn-primary" type="reset">Reset</button>
-                </form>
-            </div>
-            <div class="row">
-                <div id="alertContainer"></div>
-            </div>
+            <label for="plainDump">Drop your thread dump here</label>
+            <br/>
+            <form onsubmit="return false;">
+                <textarea id="plainDump" spellcheck="false"> </textarea>
+                <br/>
+                <button id="analyze" class="btn btn-primary">Analyze</button>
+                <button id="reset" class="btn btn-primary" type="reset">Reset</button>
+            </form>
+            <div id="alertContainer"></div>
+
         </div>
         <div role="tabpanel" class="tab-pane" id="analysis">
             <br/>

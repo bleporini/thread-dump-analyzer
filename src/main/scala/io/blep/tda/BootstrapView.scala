@@ -87,7 +87,7 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     ) render
     val tags: List[Div] = for (l <- threadDump.sharedLocks) yield {
       val theId: String = l.monitor.id
-      div(`class`:="panel-group", id := theId , role:="tablist")(
+      div(`class`:="panel-body", id := theId , role:="tablist")(
         s"${l.monitor.id}: ${l.monitor.clazz}", br,
         s"Owned by : ", br,
         buildThreadAccordion(theId)(l.ownedBy),
@@ -115,7 +115,7 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
       div(`class` := "panel panel-default")(
         div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"$panelName (${threads.size})")),
-        div(`class` := "thread-listing panel-body", id:="runningTreads", role:="tablist")(
+        div(`class` := "thread-listing panel-body", role:="tablist")(
           threads map buildThreadAccordion("runningTreads")
         )
       )
