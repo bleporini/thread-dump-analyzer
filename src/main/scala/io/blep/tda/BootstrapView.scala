@@ -4,6 +4,8 @@ import io.blep.tda.ThreadDumpAnalyzer._
 import io.blep.tda.BootstrapView.resultContainer
 import org.scalajs.dom.html.{Span, Div}
 
+import scala.scalajs.js
+import scalatags.JsDom
 import scalatags.JsDom.TypedTag
 import scalatags.JsDom.all._
 
@@ -130,7 +132,6 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
       span(`class` := "glyphicon glyphicon-collapse-down")()
     )
 
-
     div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
       div(`class` := "panel panel-default")(
         div(`class` := "panel-heading")(
@@ -169,14 +170,28 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   }
 
   def buildTabForCollapse(groupId: String, thread: AppThread, theId: String, panelCollapse: Div): TypedTag[Div] = {
-    div(
-      div(role := "tab")(
-        a("data-toggle".attr := "collapse", href := s"#$theId", "data-parent".attr := s"#$groupId")(
-          span(`class` := "leading-tab")(bulletForThreadState(thread.state)), " ", thread.name
-        )
-      ),
-      panelCollapse
-    )
+    if (thread.stackTrace isEmpty)
+      div(
+        div(role := "tab")(
+          span(`class` := "leading-tab")(bulletForThreadState(thread.state)), " ", thread.name)
+      )
+    else{
+      val stack = thread.stackTrace.foldLeft("")((acc,e)=> s"$acc\n$e")
+      val url = "http://grepcode.com/search/st?query=" + js.URIUtils.encodeURI(stack)
+      div(
+        div(role := "tab")(
+          a("data-toggle".attr := "collapse", href := s"#$theId", "data-parent".attr := s"#$groupId")(
+            span(`class` := "leading-tab")(bulletForThreadState(thread.state)), " ", thread.name
+          ),
+          "  ",
+          if (thread.stackTrace isEmpty)
+            " "
+          else
+            a(href:=url, target := "_blank")(img(src:="http://grepcode.com/static/app/images/favicon.ico"))
+        ),
+        panelCollapse
+      )
+    }
   }
 
   def buildPanelCollapse(thread: AppThread, theId: String): Div =
