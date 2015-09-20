@@ -119,23 +119,25 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     val (panelDivs, collapsablePanels) = (threads map buildThreadAccordion2("runningTreads")).unzip
 
     val collapseBtn = button(
-      `class`:= "btn btn-default btn-xs pull-right",
+      `class`:= "btn btn-default btn-xs",
       onclick := { (e: Any) => collapseAll(collapsablePanels) }
     )(
       span(`class` := "glyphicon glyphicon-collapse-up")()
     )
 
     val expandBtn = button(
-      `class`:= "btn btn-default btn-xs pull-right",
+      `class`:= "btn btn-default btn-xs",
       onclick := { (e: Any) => expandAll(collapsablePanels) }
     )(
       span(`class` := "glyphicon glyphicon-collapse-down")()
     )
 
+    val btnGrp = div(`class`:= "btn-group pull-right")(collapseBtn, expandBtn)
+
     div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
       div(`class` := "panel panel-default")(
         div(`class` := "panel-heading")(
-          h2(`class` := "panel-title")(s"$panelName (${threads.size})",expandBtn,collapseBtn)
+          h2(`class` := "panel-title")(s"$panelName (${threads.size})",btnGrp)
         ),
         div(`class` := "thread-listing panel-body", role := "tablist")(panelDivs)
       )
@@ -145,6 +147,8 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   def collapseAll(divs:List[Div])=
     divs.foreach { d =>
       if(d.classList contains "in") d.classList.remove ("in")
+      if(! d.classList.contains("collapse")) d.classList.add ("collapse")
+
     }
 
   def expandAll(divs:List[Div]) =
