@@ -13,3 +13,11 @@ To use it, just run :
  ```
  
  and serve the test.html page.
+
+
+## Release notes
+
+### Version 2
+- Expand all / Collapse All feature
+- Link to Grepcode
+- No more empty stack display for system threads
