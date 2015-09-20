@@ -87,6 +87,7 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     ) render
     val tags: List[Div] = for (l <- threadDump.sharedLocks) yield {
       val theId: String = l.monitor.id
+
       div(`class`:="panel-body", id := theId , role:="tablist")(
         s"${l.monitor.id}: ${l.monitor.clazz}", br,
         s"Owned by : ", br,
@@ -111,31 +112,79 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     )render
   }
 
-  def buildThreadListPanel(panelId:String, panelName:String,threads: List[AppThread])=
+  def buildThreadListPanel(panelId:String, panelName:String,threads: List[AppThread])={
+
+    val (panelDivs, collapsablePanels) = (threads map buildThreadAccordion2("runningTreads")).unzip
+
+    val collapseBtn = button(
+      `class`:= "btn btn-default btn-xs pull-right",
+      onclick := { (e: Any) => collapseAll(collapsablePanels) }
+    )(
+      span(`class` := "glyphicon glyphicon-collapse-up")()
+    )
+
+    val expandBtn = button(
+      `class`:= "btn btn-default btn-xs pull-right",
+      onclick := { (e: Any) => expandAll(collapsablePanels) }
+    )(
+      span(`class` := "glyphicon glyphicon-collapse-down")()
+    )
+
+
     div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
       div(`class` := "panel panel-default")(
-        div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"$panelName (${threads.size})")),
-        div(`class` := "thread-listing panel-body", role:="tablist")(
-          threads map buildThreadAccordion("runningTreads")
-        )
+        div(`class` := "panel-heading")(
+          h2(`class` := "panel-title")(s"$panelName (${threads.size})",expandBtn,collapseBtn)
+        ),
+        div(`class` := "thread-listing panel-body", role := "tablist")(panelDivs)
       )
     )::Nil
+  }
+
+  def collapseAll(divs:List[Div])=
+    divs.foreach { d =>
+      if(d.classList contains "in") d.classList.remove ("in")
+    }
+
+  def expandAll(divs:List[Div]) =
+    divs.foreach{ d=>
+      if(! d.classList.contains("in")) d.classList.add ("in")
+    }
 
   def buildThreadAccordion(groupId:String)(thread: AppThread)={
     val theId: String = groupId + thread.id
-    div(`class`:= "")(
-      div(role:="tab")(
-        a("data-toggle".attr := "collapse", href := s"#$theId", "data-parent".attr := s"#$groupId")(
-          span(`class`:="leading-tab")(bulletForThreadState(thread.state)), " ", thread.name
-        )
-      ),
-      div(id := theId, `class`:="panel-collapse collapse", role:="tabpanel")(
-        div(`class`:="panel-body")(
-          pre(thread.stackTrace map (_ + "\n"))
-        )
-      )
+    buildTabForCollapse(groupId, thread, theId, buildPanelCollapse(thread, theId))
+
+  }
+
+
+  def buildThreadAccordion2(groupId:String)(thread: AppThread)={
+    val theId: String = groupId + thread.id
+    val panelCollapse = buildPanelCollapse(thread, theId)
+
+    (
+      buildTabForCollapse(groupId, thread, theId, panelCollapse),
+      panelCollapse
     )
   }
+
+  def buildTabForCollapse(groupId: String, thread: AppThread, theId: String, panelCollapse: Div): TypedTag[Div] = {
+    div(
+      div(role := "tab")(
+        a("data-toggle".attr := "collapse", href := s"#$theId", "data-parent".attr := s"#$groupId")(
+          span(`class` := "leading-tab")(bulletForThreadState(thread.state)), " ", thread.name
+        )
+      ),
+      panelCollapse
+    )
+  }
+
+  def buildPanelCollapse(thread: AppThread, theId: String): Div =
+    div(id := theId, `class` := "panel-collapse collapse", role := "tabpanel")(
+      div(`class` := "panel-body")(
+        pre(thread.stackTrace map (_ + "\n"))
+      )
+    ) render
 
   val bulletForThreadState: PartialFunction[ThreadState, TypedTag[Span]]={
     case Runnable(_) => runningBullet
