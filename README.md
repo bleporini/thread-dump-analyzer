@@ -21,3 +21,7 @@ To use it, just run :
 - Expand all / Collapse All feature
 - Link to Grepcode
 - No more empty stack display for system threads
+
+### Version 3
+- Bug with collapse and Bootstrap 3.0.3
+- Button formatting
