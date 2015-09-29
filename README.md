@@ -25,3 +25,6 @@ To use it, just run :
 ### Version 3
 - Bug with collapse and Bootstrap 3.0.3
 - Button formatting
+
+### Version 4
+- Adding search feature
