@@ -1,11 +1,12 @@
 package io.blep.tda
 
-import io.blep.tda.ThreadDumpAnalyzer._
 import io.blep.tda.BootstrapView.resultContainer
-import org.scalajs.dom.html.{Span, Div}
+import io.blep.tda.ThreadDumpAnalyzer._
+import org.scalajs.dom
+import org.scalajs.dom.html.{Div, Span}
+import org.scalajs.dom.raw.NodeList
 
 import scala.scalajs.js
-import scalatags.JsDom
 import scalatags.JsDom.TypedTag
 import scalatags.JsDom.all._
 
@@ -23,11 +24,15 @@ object BootstrapView {
 
 
 class BootstrapView(val threadDump: ThreadDump) extends View{
+
   val runningBullet = span(`class`:="glyphicon glyphicon-repeat running-thread")
   val blockedBullet = span(`class`:="glyphicon glyphicon-remove-circle blocked-thread")
   val waitingBullet = span(`class`:="glyphicon glyphicon-time waiting-thread")
   val timedWaitingBullet = span(`class`:="glyphicon glyphicon-time timed-waiting-thread")
   val newBullet = span(`class`:="glyphicon glyphicon-collapse-up running-thread")
+
+  val searchResult = span render
+  val searchInput = input(`class` := "form-control", `type` := "text", placeholder:="Case matters...").render
 
 
   override def displayResults={
@@ -43,44 +48,105 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
     )
 
     resultContainer.appendChild(listThreads)
+
+    dom.document.addEventListener("analysis_finished", (e:Any)=> searchInput.focus())
+
   }
 
   def buildGeneralInfoPanel={
-    div(`class` := "panel panel-default affix affix-top")(
-      div(`class` := "panel-heading")(h2(`class` := "panel-title")("General information")),
-      div(`class` := "thread-listing panel-body")(
-        table(`class`:="info")(
-          tr(
-            td("Dump date"),td(threadDump.dateStr)
-          ),
-          tr(
-            td("Java version"),td(threadDump.javaVersion)
-          ),
-          tr(
-            td("All threads"),td(threadDump.threads.size)
-          ),
-          tr(
-            td(a(href := "#runningThreads")(runningBullet, " Running threads")),td(threadDump.runningThreads.size)
-          ),
-          tr(
-            td(a(href:="#blockedThreads")(blockedBullet," Blocked threads")),td(threadDump.blockedThreads.size)
-          ),
-          tr(
-            td(a(href:="#waitingThreads")(waitingBullet," Waiting threads")),td(threadDump.waitingThreads.size)
-          ),
-          tr(
-            td(a(href:="#timedWaitingThreads")(timedWaitingBullet," Timed waiting threads")),td(threadDump.timedWaitingThreads.size)
-          ),
-          tr(
-            td(newBullet," New threads"),td(threadDump.newThreads.size)
-          ),
-          tr(
-            td("System threads"),td(threadDump.systemThreads.size)
+    div(`class`:= "affix affix-top")(
+      div(`class` := "panel panel-default")(
+        div(`class` := "panel-heading")(h2(`class` := "panel-title")("General information")),
+        div(`class` := "thread-listing panel-body")(
+          table(`class` := "info")(
+            tr(
+              td("Dump date"), td(threadDump.dateStr)
+            ),
+            tr(
+              td("Java version"), td(threadDump.javaVersion)
+            ),
+            tr(
+              td("All threads"), td(threadDump.threads.size)
+            ),
+            tr(
+              td(a(href := "#runningThreads")(runningBullet, " Running threads")), td(threadDump.runningThreads.size)
+            ),
+            tr(
+              td(a(href := "#blockedThreads")(blockedBullet, " Blocked threads")), td(threadDump.blockedThreads.size)
+            ),
+            tr(
+              td(a(href := "#waitingThreads")(waitingBullet, " Waiting threads")), td(threadDump.waitingThreads.size)
+            ),
+            tr(
+              td(a(href := "#timedWaitingThreads")(timedWaitingBullet, " Timed waiting threads")), td(threadDump.timedWaitingThreads.size)
+            ),
+            tr(
+              td(newBullet, " New threads"), td(threadDump.newThreads.size)
+            ),
+            tr(
+              td("System threads"), td(threadDump.systemThreads.size)
+            )
           )
         )
+      ),
+      form(`class`:="form-inline", onsubmit:="return false;")(
+        div(`class`:="form-group")(searchInput)," ",
+        button(`class`:="btn btn-primary btn-default", onclick := { (e: Any) => searchAction(searchInput.value) })("Search in stacks"),
+        " ",
+        button(`class`:="btn btn-primary btn-default", onclick := { (e: Any) => {
+          resetHighlight
+          resetSearchResult
+        }})("Reset"),
+        br,searchResult
       )
     ) render
 
+  }
+
+  def searchAction(searchString:String)={
+    resetHighlight
+    val pres: NodeList = dom.document.getElementsByTagName("pre")
+    val res = for {
+      i <- 0 to pres.length -1
+      node = pres(i)
+      text = node.textContent
+      if text contains searchString
+    } yield {
+        val parentNode = node.parentNode
+
+        val (occurenceCount,newPre) = buildHighlightesPre(text,searchString)
+        parentNode.removeChild(node)
+        parentNode.appendChild(newPre)
+
+        parentNode.parentNode.attributes.getNamedItem("class").value = "panel-collapse collapse in"
+        occurenceCount
+      }
+
+    val totalOcurrenceCount = if (res.nonEmpty) res.reduce(_+_) else 0
+    searchResult.innerHTML = s"$totalOcurrenceCount occurences found"
+  }
+
+  def resetSearchResult = searchResult.innerHTML = ""
+
+  def resetHighlight={
+    val pres: NodeList = dom.document.getElementsByTagName("pre")
+    for (i <- 0 to pres.length - 1) {
+      val node = pres(i)
+      node.textContent = node.textContent
+    }
+
+  }
+
+  def buildHighlightesPre(text:String, toFind:String)={
+    def _inner(strs:List[String], acc:List[Modifier]):List[Modifier] = strs match {
+      case Nil => acc
+      case e :: Nil => span(e) :: acc
+      case e :: tail => _inner(tail, em(`class`:="highlight")(toFind) :: span(e) :: acc)
+    }
+
+    val strings = text.split(toFind).toList
+
+    (strings.size-1,pre(_inner(strings,Nil).reverse).render)
   }
 
   def buildSharedLockPanel={
