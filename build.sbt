@@ -1,3 +1,5 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
 enablePlugins(ScalaJSPlugin)
 
@@ -14,4 +16,17 @@ libraryDependencies ++= Seq(
 )
 
 emitSourceMaps := true
+
+lazy val root = (project in file("."))
+.enablePlugins(GitVersioning)
+  .enablePlugins(BuildInfoPlugin)
+  . settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
+        BuildInfoKey.action("buildTime") {
+          ZonedDateTime.now().format(ISO_OFFSET_DATE_TIME)
+        }
+        , "gitCommit" -> git.gitHeadCommit.value
+      ),
+    buildInfoPackage := "io.blep.tda"
+  )
 

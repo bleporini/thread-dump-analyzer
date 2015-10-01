@@ -97,11 +97,17 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
           resetHighlight
           resetSearchResult
         }})("Reset"),
-        br,searchResult
+        br,searchResult,
+        br,br,buildInfo
       )
     ) render
 
   }
+
+  val buildInfo=div(`class`:="bs-callout bs-callout-info")(
+    h4(BuildInfo.name),
+    em("Version: "), BuildInfo.version, br, em("Commit: "), BuildInfo.gitCommit
+  )
 
   def searchAction(searchString:String)={
     resetHighlight
