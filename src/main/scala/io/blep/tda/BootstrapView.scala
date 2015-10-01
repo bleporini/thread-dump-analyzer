@@ -150,26 +150,38 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
   }
 
   def buildSharedLockPanel={
-    val panel: Div = div(`class` := "panel panel-default")(
-      div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"Hot monitors (${threadDump.sharedLocks.size})"))
-    ) render
-    val tags: List[Div] = for (l <- threadDump.sharedLocks) yield {
+    val (tags, collapsablePanels) = (for (l <- threadDump.sharedLocks) yield {
       val theId: String = l.monitor.id
+      val (panelDiv, collapsablePanel) = buildThreadAccordion(theId)(l.ownedBy)
 
-      div(`class`:="panel-body", id := theId , role:="tablist")(
+      val (accordionsForBlocked, blockedCollapsablePanels) = (l.blockedThreads map buildThreadAccordion(theId))unzip
+      val theDiv = div(`class`:="panel-body", id := theId , role:="tablist")(
         s"${l.monitor.id}: ${l.monitor.clazz}", br,
         s"Owned by : ", br,
-        buildThreadAccordion(theId)(l.ownedBy),
+        panelDiv,
         s"Locks ${l.blockedThreads.size} threads : ", br,
         div(`class`:="thread-listing", id:=s"blockedBy$theId}")(
-          l.blockedThreads map buildThreadAccordion(theId)
+          accordionsForBlocked
         )
       ) render
-    }
+
+      (theDiv, collapsablePanel::blockedCollapsablePanels)
+
+    }) unzip
+
+    val allCollapsable = collapsablePanels flatten
+
+    val btnGrp = buildCollapseAndExpandButtons(allCollapsable)
+
+    val panel: Div = div(`class` := "panel panel-default")(
+      div(`class` := "panel-heading")(h2(`class` := "panel-title")(s"Hot monitors (${threadDump.sharedLocks.size})",btnGrp))
+    ) render
+
 
     tags foreach panel.appendChild
     panel
   }
+
 
   def listThreads ={
     div(`class`:="row")(
@@ -182,8 +194,21 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
 
   def buildThreadListPanel(panelId:String, panelName:String,threads: List[AppThread])={
 
-    val (panelDivs, collapsablePanels) = (threads map buildThreadAccordion2("runningTreads")).unzip
+    val (panelDivs, collapsablePanels) = (threads map buildThreadAccordion("runningTreads")).unzip
 
+    val btnGrp = buildCollapseAndExpandButtons(collapsablePanels)
+
+    div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
+      div(`class` := "panel panel-default")(
+        div(`class` := "panel-heading")(
+          h2(`class` := "panel-title")(s"$panelName (${threads.size})",btnGrp)
+        ),
+        div(`class` := "thread-listing panel-body", role := "tablist")(panelDivs)
+      )
+    )::Nil
+  }
+
+  def buildCollapseAndExpandButtons(collapsablePanels: List[Div])={
     val collapseBtn = button(
       `class`:= "btn btn-default btn-xs",
       onclick := { (e: Any) => collapseAll(collapsablePanels) }
@@ -198,17 +223,10 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
       span(`class` := "glyphicon glyphicon-collapse-down")()
     )
 
-    val btnGrp = div(`class`:= "btn-group pull-right")(collapseBtn, expandBtn)
+    div(`class`:= "btn-group pull-right")(collapseBtn, expandBtn)
 
-    div(`class`:="col-md-4")::div(`class`:="col-md-8", id:=panelId)(
-      div(`class` := "panel panel-default")(
-        div(`class` := "panel-heading")(
-          h2(`class` := "panel-title")(s"$panelName (${threads.size})",btnGrp)
-        ),
-        div(`class` := "thread-listing panel-body", role := "tablist")(panelDivs)
-      )
-    )::Nil
   }
+
 
   def collapseAll(divs:List[Div])=
     divs.foreach { d =>
@@ -222,14 +240,8 @@ class BootstrapView(val threadDump: ThreadDump) extends View{
       if(! d.classList.contains("in")) d.classList.add ("in")
     }
 
+
   def buildThreadAccordion(groupId:String)(thread: AppThread)={
-    val theId: String = groupId + thread.id
-    buildTabForCollapse(groupId, thread, theId, buildPanelCollapse(thread, theId))
-
-  }
-
-
-  def buildThreadAccordion2(groupId:String)(thread: AppThread)={
     val theId: String = groupId + thread.id
     val panelCollapse = buildPanelCollapse(thread, theId)
 
