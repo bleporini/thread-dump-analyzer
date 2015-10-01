@@ -17,14 +17,20 @@ To use it, just run :
 
 ## Release notes
 
-### Version 2
-- Expand all / Collapse All feature
-- Link to Grepcode
-- No more empty stack display for system threads
+### Version 5
+- Adding expand/collapse buttons on hot monitors
+- Adding build info
+
+### Version 4
+- Adding search feature
 
 ### Version 3
 - Bug with collapse and Bootstrap 3.0.3
 - Button formatting
 
-### Version 4
-- Adding search feature
+### Version 2
+- Expand all / Collapse All feature
+- Link to Grepcode
+- No more empty stack display for system threads
+
+

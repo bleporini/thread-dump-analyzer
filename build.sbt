@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 enablePlugins(ScalaJSPlugin)
 
 name := "Thread dump analyzer"
-version := "4"
+version := "5"
 
 scalaVersion := "2.11.6" // or any other Scala version >= 2.10.2
 
